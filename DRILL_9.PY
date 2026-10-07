@@ -58,6 +58,12 @@ def update():
     x += dir_x * MOVE_SPEED
     y += dir_y * MOVE_SPEED
 
+    # 그리는 크기의 절반을 남겨 캐릭터 전체를 화면 안에 유지한다.
+    half_width = CHARACTER_WIDTH / 2
+    half_height = CHARACTER_HEIGHT / 2
+    x = max(half_width, min(CANVAS_WIDTH - half_width, x))
+    y = max(half_height, min(CANVAS_HEIGHT - half_height, y))
+
     # 좌우 이동만 바라보는 방향을 바꾼다. 상하 이동과 정지는 유지한다.
     if dir_x != 0:
         facing = dir_x
