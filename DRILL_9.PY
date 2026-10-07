@@ -22,6 +22,12 @@ IDLE_LEFT = 2
 IDLE_RIGHT = 3
 
 
+def reset_input():
+    """모든 방향키의 눌림 상태를 초기화한다."""
+    global left_pressed, right_pressed, up_pressed, down_pressed
+    left_pressed = right_pressed = up_pressed = down_pressed = False
+
+
 def handle_events():
     global running
     global left_pressed, right_pressed, up_pressed, down_pressed
@@ -87,9 +93,7 @@ def update():
 
 def draw():
     clear_canvas()
-    ground.draw(
-        CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2, CANVAS_WIDTH, CANVAS_HEIGHT
-    )
+    ground.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
     character.clip_draw(
         int(frame) * FRAME_WIDTH, action * FRAME_HEIGHT,
         FRAME_WIDTH, FRAME_HEIGHT, x, y, CHARACTER_WIDTH, CHARACTER_HEIGHT
@@ -112,7 +116,7 @@ def main():
         facing = 1
         action = IDLE_RIGHT
         frame = 0.0
-        left_pressed = right_pressed = up_pressed = down_pressed = False
+        reset_input()
 
         while running:
             handle_events()
