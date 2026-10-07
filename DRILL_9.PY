@@ -1,4 +1,7 @@
 from pico2d import *
+from pathlib import Path
+
+RESOURCE_DIR = Path(__file__).resolve().parent
 
 CANVAS_WIDTH = 1280
 CANVAS_HEIGHT = 1024
@@ -92,8 +95,8 @@ def draw():
 
 
 open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-ground = load_image('TUK_GROUND.png')
-character = load_image('animation_sheet.png')
+ground = load_image(str(RESOURCE_DIR / 'TUK_GROUND.png'))
+character = load_image(str(RESOURCE_DIR / 'animation_sheet.png'))
 
 running = True
 x = CANVAS_WIDTH // 2
