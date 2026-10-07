@@ -94,27 +94,34 @@ def draw():
     update_canvas()
 
 
-open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
-ground = load_image(str(RESOURCE_DIR / 'TUK_GROUND.png'))
-character = load_image(str(RESOURCE_DIR / 'animation_sheet.png'))
+def main():
+    global ground, character, running, x, y, dir_x, dir_y
+    global facing, action, frame
+    global left_pressed, right_pressed, up_pressed, down_pressed
 
-running = True
-x = CANVAS_WIDTH // 2
-y = CANVAS_HEIGHT // 2
-dir_x = 0
-dir_y = 0
-facing = 1
-action = IDLE_RIGHT
-frame = 0.0
-left_pressed = False
-right_pressed = False
-up_pressed = False
-down_pressed = False
+    open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
+    try:
+        ground = load_image(str(RESOURCE_DIR / 'TUK_GROUND.png'))
+        character = load_image(str(RESOURCE_DIR / 'animation_sheet.png'))
+        running = True
+        x, y = CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2
+        dir_x = dir_y = 0
+        facing = 1
+        action = IDLE_RIGHT
+        frame = 0.0
+        left_pressed = right_pressed = up_pressed = down_pressed = False
 
-while running:
-    handle_events()
-    update()
-    draw()
-    delay(FRAME_DELAY)
+        while running:
+            handle_events()
+            # 종료 입력을 받으면 다음 화면을 그리지 않고 루프를 끝낸다.
+            if not running:
+                break
+            update()
+            draw()
+            delay(FRAME_DELAY)
+    finally:
+        close_canvas()
 
-close_canvas()
+
+if __name__ == '__main__':
+    main()
