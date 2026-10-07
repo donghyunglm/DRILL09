@@ -1,5 +1,6 @@
 from pico2d import *
 from pathlib import Path
+from math import hypot
 
 RESOURCE_DIR = Path(__file__).resolve().parent
 
@@ -58,8 +59,11 @@ def update():
     dir_x = int(right_pressed) - int(left_pressed)
     dir_y = int(up_pressed) - int(down_pressed)
     # 이벤트 유무와 관계없이 매 프레임 이동한다. 위쪽은 y가 증가한다.
-    x += dir_x * MOVE_SPEED
-    y += dir_y * MOVE_SPEED
+    # 대각선에서도 수평·수직 이동과 같은 속도를 유지한다.
+    direction_length = hypot(dir_x, dir_y)
+    if direction_length:
+        x += dir_x / direction_length * MOVE_SPEED
+        y += dir_y / direction_length * MOVE_SPEED
 
     # 그리는 크기의 절반을 남겨 캐릭터 전체를 화면 안에 유지한다.
     half_width = CHARACTER_WIDTH / 2
