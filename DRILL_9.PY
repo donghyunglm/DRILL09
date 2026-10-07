@@ -3,6 +3,19 @@ from pico2d import *
 CANVAS_WIDTH = 1280
 CANVAS_HEIGHT = 1024
 MOVE_SPEED = 5
+ANIMATION_SPEED = 0.2
+FRAME_DELAY = 0.01
+FRAME_WIDTH = 100
+FRAME_HEIGHT = 100
+FRAME_COUNT = 8
+CHARACTER_WIDTH = 100
+CHARACTER_HEIGHT = 100
+
+# 스프라이트 행 번호는 이미지 아래쪽부터 센다.
+RUN_LEFT = 0
+RUN_RIGHT = 1
+IDLE_LEFT = 2
+IDLE_RIGHT = 3
 
 
 def handle_events():
@@ -36,7 +49,7 @@ def handle_events():
 
 
 def update():
-    global dir_x, dir_y, x, y
+    global dir_x, dir_y, x, y, facing, action, frame
 
     # 눌림 상태로 계산하므로 반복 입력은 누적되지 않고 반대 입력은 상쇄된다.
     dir_x = int(right_pressed) - int(left_pressed)
@@ -45,12 +58,30 @@ def update():
     x += dir_x * MOVE_SPEED
     y += dir_y * MOVE_SPEED
 
+    # 좌우 이동만 바라보는 방향을 바꾼다. 상하 이동과 정지는 유지한다.
+    if dir_x != 0:
+        facing = dir_x
+
+    if dir_x != 0 or dir_y != 0:
+        next_action = RUN_RIGHT if facing == 1 else RUN_LEFT
+    else:
+        next_action = IDLE_RIGHT if facing == 1 else IDLE_LEFT
+
+    # 동작이 바뀌면 첫 프레임부터, 유지되면 8프레임을 반복한다.
+    if action != next_action:
+        action = next_action
+        frame = 0.0
+    else:
+        frame = (frame + ANIMATION_SPEED) % FRAME_COUNT
+
 
 def draw():
     clear_canvas()
     ground.draw(CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2)
-    # 오른쪽 IDLE 첫 프레임. 행 좌표는 이미지 아래쪽을 기준으로 한다.
-    character.clip_draw(0, 300, 100, 100, x, y)
+    character.clip_draw(
+        int(frame) * FRAME_WIDTH, action * FRAME_HEIGHT,
+        FRAME_WIDTH, FRAME_HEIGHT, x, y, CHARACTER_WIDTH, CHARACTER_HEIGHT
+    )
     update_canvas()
 
 
@@ -63,6 +94,9 @@ x = CANVAS_WIDTH // 2
 y = CANVAS_HEIGHT // 2
 dir_x = 0
 dir_y = 0
+facing = 1
+action = IDLE_RIGHT
+frame = 0.0
 left_pressed = False
 right_pressed = False
 up_pressed = False
@@ -72,6 +106,6 @@ while running:
     handle_events()
     update()
     draw()
-    delay(0.01)
+    delay(FRAME_DELAY)
 
 close_canvas()
