@@ -22,12 +22,6 @@ IDLE_LEFT = 2
 IDLE_RIGHT = 3
 
 
-def reset_input():
-    """모든 방향키의 눌림 상태를 초기화한다."""
-    global left_pressed, right_pressed, up_pressed, down_pressed
-    left_pressed = right_pressed = up_pressed = down_pressed = False
-
-
 def handle_events():
     global running
     global left_pressed, right_pressed, up_pressed, down_pressed
@@ -101,11 +95,20 @@ def draw():
     update_canvas()
 
 
+def validate_resources():
+    """창을 열기 전에 필요한 이미지 파일이 있는지 확인한다."""
+    for filename in ('TUK_GROUND.png', 'animation_sheet.png'):
+        resource_path = RESOURCE_DIR / filename
+        if not resource_path.is_file():
+            raise FileNotFoundError(f'필수 이미지 파일을 찾을 수 없습니다: {resource_path}')
+
+
 def main():
     global ground, character, running, x, y, dir_x, dir_y
     global facing, action, frame
     global left_pressed, right_pressed, up_pressed, down_pressed
 
+    validate_resources()
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     try:
         ground = load_image(str(RESOURCE_DIR / 'TUK_GROUND.png'))
@@ -116,7 +119,7 @@ def main():
         facing = 1
         action = IDLE_RIGHT
         frame = 0.0
-        reset_input()
+        left_pressed = right_pressed = up_pressed = down_pressed = False
 
         while running:
             handle_events()
